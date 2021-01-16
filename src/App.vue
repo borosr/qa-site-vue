@@ -1,5 +1,6 @@
 <script lang="ts">
 import Vue from 'vue';
+import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: 'App',
@@ -18,14 +19,31 @@ export default Vue.extend({
     ],
   }),
   methods: {
-    move(path: string) {
-      this.$router.push(path)
+    logout() {
+      this.$store.dispatch('auth/logout')
     }
+  },
+  computed: {
+    ...mapGetters('auth', [
+      'loggedIn'
+    ]),
+  },
+  async beforeCreate() {
+    await this.$store.dispatch('auth/checkAndRevokeToken')
   }
 });
 </script>
 
 <style scoped type="scss">
+.main-title-btn {
+  background: inherit !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.theme--dark.v-btn--active::before {
+  opacity: 0 !important;
+}
 </style>
 
 <template>
@@ -35,11 +53,13 @@ export default Vue.extend({
         color="primary"
         dark
     >
-      <div class="d-flex align-center" @click="move('/')" style="cursor: pointer">
-        <h3>
-          <v-icon>mdi-head-question-outline</v-icon>
-          QA Site
-        </h3>
+      <div class="d-flex align-center">
+        <v-btn to="/" class="main-title-btn">
+          <h3>
+            <v-icon>mdi-head-question-outline</v-icon>
+            QA Site
+          </h3>
+        </v-btn>
       </div>
 
       <v-spacer></v-spacer>
@@ -64,13 +84,24 @@ export default Vue.extend({
               v-for="(item, i) in menuItems"
               :key="i"
               link
+              :to="item.path"
           >
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title @click="move(item.path)" v-text="item.title"></v-list-item-title>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
             </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+              v-if="loggedIn"
+              @click="logout(logout)"
+              link
+          >
+            <v-list-item-icon>
+              <v-icon v-text="'mdi-logout'"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content v-text="'Logout'"></v-list-item-content>
           </v-list-item>
         </v-list>
       </v-menu>

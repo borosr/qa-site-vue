@@ -16,15 +16,15 @@ const config = {
 
 const _axios = axios.create(config);
 
-const setupInterceptors = (store: Store<any>, router: VueRouter) => {
+export const setupInterceptors = (store: Store<any>, router: VueRouter) => {
     _axios.interceptors.request.use(
         async (config) => {
             if (localStorage.getItem('accessToken')) {
-                await store.dispatch('checkAndRevokeToken').catch((err: Error) => {
+                await store.dispatch('auth/checkAndRevokeToken').catch((err: Error) => {
                     console.error(err)
-                    router.push('/')
+                    router.replace('/')
                 })
-                config.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`
+                config.headers.Authorization = `${localStorage.getItem('accessToken')}`
             }
             return config;
         },
@@ -36,12 +36,14 @@ const setupInterceptors = (store: Store<any>, router: VueRouter) => {
 
 // Add a response interceptor
     _axios.interceptors.response.use(
-        function (response) {
-            // Do something with response data
+        async function (response) {
+            if (response.status === 403) {
+                await store.dispatch('auth/forceLogout')
+                await router.replace('/')
+            }
             return response;
         },
         function (error) {
-            // Do something with response error
             return Promise.reject(error);
         }
     );
@@ -60,4 +62,4 @@ Object.defineProperties(Vue.prototype, {
     },
 });
 
-export default {_axios, setupInterceptors};
+export default _axios;

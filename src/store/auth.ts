@@ -1,10 +1,22 @@
 import Vue from "vue"
-import Vuex, {Module} from 'vuex'
+import {Module} from 'vuex'
 import jwtDecode from "jwt-decode"
-import moment from "moment";
-import axios from "axios";
+import moment from "moment"
+import defaultAxios, {AxiosResponse} from "axios"
+import _axios from '@/plugins/axios'
 
-Vue.use(Vuex)
+const defaultAuth = () => ({
+    id: '',
+    kind: '',
+    username: '',
+    expr: null
+})
+
+interface LoginResponse {
+    token: string;
+    revoke_token: string;
+    auth_kind: string;
+}
 
 interface Auth {
     auth: {
@@ -15,60 +27,105 @@ interface Auth {
     };
 }
 
+function tokenExpired(expr: Date | null) {
+    if (!expr) {
+        return true
+    }
+    return moment(new Date().getUTCMilliseconds())
+        .add(5, 'm')
+        .toDate().getUTCMilliseconds() > expr.getUTCMilliseconds();
+}
+
 export default {
     state: {
-        auth: {
-            id: '',
-            kind: '',
-            username: '',
-            expr: null
-        }
+        auth: defaultAuth()
     },
     getters: {
-        loggedIn: state => localStorage.getItem('accessToken')
-            && state.auth.id && state.auth.username && state.auth.expr
+        loggedIn: state => state.auth.id && state.auth.username && state.auth.expr
+            && localStorage.getItem('accessToken'),
+        kind: state => state.auth?.kind
     },
     mutations: {
-        setAuthData(state, token) {
+        setAuthData(state, {token, kind}) {
             const data: { sub: string; sid: string; exp: number } = jwtDecode(token);
-            Vue.set(state, 'auth', {
-                username: data.sub,
-                id: data.sid,
-                expr: new Date(data.exp),
-            })
+            Vue.set(state.auth, 'id', data.sid)
+            Vue.set(state.auth, 'username', data.sub)
+            Vue.set(state.auth, 'expr', new Date(data.exp * 1000))
+            Vue.set(state.auth, 'kind', kind)
         }
     },
     actions: {
-        loginDefault({commit, state}, {username, password}: { username: string; password: string }) {
-            return axios.post('/api/login', {
+        loginDefault({commit}, {username, password}: { username: string; password: string }) {
+            return defaultAxios.post('/api/login', {
                 username: username,
                 password: password,
             }).then((resp) => {
                 localStorage.setItem('accessToken', resp.data.token)
                 localStorage.setItem('revokeToken', resp.data.revoke_token)
-                state.auth.kind = resp.data.auth_kind
-                commit('setAuthData', resp.data.token)
+                localStorage.setItem('authKind', resp.data.auth_kind)
+                commit('setAuthData', {
+                    token: resp.data.token,
+                    kind: resp.data.auth_kind
+                })
             })
         },
-        checkAndRevokeToken({commit, state}) {
-            if (!state.auth.expr) {
-                // logout
-                return Promise.reject('token expiration missing')
-            } else if (
-                moment(new Date().getUTCMilliseconds()).add(5, 'm').toDate().getUTCMilliseconds() >
-                state.auth.expr.getUTCMilliseconds()) {
-                return axios.post('/api/revoke', {
+        checkAndRevokeToken({commit, state, dispatch}) {
+            const token = localStorage.getItem('accessToken')
+            if (token) {
+                commit('setAuthData', {
+                    token: token,
+                    kind: localStorage.getItem('authKind')
+                })
+            }
+            if (tokenExpired(state.auth.expr) && localStorage.getItem('revokeToken')) {
+                return defaultAxios.post<LoginResponse>('/api/revoke', {
                     'revoke_token': localStorage.getItem('revokeToken')
                 }, {
                     headers: {
-                        'Authorization': localStorage.getItem('accessToken')
+                        Authorization: `${localStorage.getItem('accessToken')}`
                     }
-                }).then((resp: any) => {
-                    localStorage.setItem('accessToken', resp.data.token)
-                    localStorage.setItem('revokeToken', resp.data.revoke_token)
-                    commit('setAuthData', resp.data.token)
                 })
+                    .catch(async () => {
+                        await dispatch('forceLogout')
+                    })
+                    .then((resp: AxiosResponse<LoginResponse> | void) => {
+                        if (resp) {
+                            localStorage.setItem('accessToken', resp.data.token)
+                            localStorage.setItem('revokeToken', resp.data.revoke_token)
+                            localStorage.setItem('authKind', resp.data.auth_kind)
+                            commit('setAuthData', {
+                                token: resp.data.token,
+                                kind: resp.data.auth_kind
+                            })
+                        }
+                    })
             }
+            return dispatch('forceLogout')
+        },
+        logout({dispatch}) {
+            return _axios.delete('/api/logout').then((value => {
+                dispatch('forceLogout')
+                return value
+            })).catch(() => dispatch('forceLogout'))
+        },
+        forceLogout({state}) {
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('revokeToken')
+            localStorage.removeItem('authKind')
+            Vue.set(state.auth, 'id', '')
+            Vue.set(state.auth, 'kind', '')
+            Vue.set(state.auth, 'username', '')
+            Vue.set(state.auth, 'expr', null)
+        },
+        getUserData({state}) {
+            return _axios.get(`/api/users/${state.auth.id}`)
+        },
+        updateProfile({state}, user: { username: string; fullName: string; password: string}) {
+            return _axios.put(`/api/users/${state.auth.id}`, {
+                'username': user.username,
+                'password': user.password,
+                'full_name': user.fullName
+            })
         }
     },
     modules: {}

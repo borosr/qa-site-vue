@@ -20,7 +20,9 @@ export default Vue.extend({
 
 <template>
   <div>
-    <div v-if="loggedIn"></div>
+    <div v-if="loggedIn">
+      <router-view/>
+    </div>
     <Login v-else/>
   </div>
 </template>
