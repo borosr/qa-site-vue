@@ -27,10 +27,11 @@ export const setupInterceptors = (store: Store<any>, router: VueRouter) => {
                         router.replace('/')
                         return null
                     })
-                if (!checkResult) {
+                const token = localStorage.getItem('accessToken')
+                if (!checkResult || !token) {
                     return Promise.reject()
                 }
-                config.headers.Authorization = `${localStorage.getItem('accessToken')}`
+                config.headers.Authorization = `${token}`
             }
             return config;
         },
