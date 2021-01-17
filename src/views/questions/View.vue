@@ -4,10 +4,11 @@ import {Question} from '@/store/questions'
 import {AxiosResponse} from "axios";
 import {Answer} from "@/store/answers";
 import Answers from '@/views/answers/List.vue'
+import NewAnswer from '@/views/answers/New.vue'
 
 export default Vue.extend({
   name: "ViewQuestions",
-  components: {Answers},
+  components: {Answers, NewAnswer},
   data: () => ({
     question: {
       id: '',
@@ -20,7 +21,6 @@ export default Vue.extend({
     },
     answers: [],
     answering: false,
-    answer: '',
     editing: false,
     originalQuestion: {
       title: '',
@@ -63,21 +63,13 @@ export default Vue.extend({
       this.question.description = this.originalQuestion.description
       this.editing = false
     },
-    sendAnswer() {
-      if (this.answer) {
-        this.$store.dispatch('answers/save', {
-          questionId: this.question.id,
-          answer: this.answer
-        }).then(() => {
-          this.answer = ''
-          this.answering = false
-          this.$store.dispatch('questions/getAnswers', this.$route.params.id)
-              .then((answers: AxiosResponse<Answer[]>) => {
-                this.answers = answers.data || []
-              })
-        })
-      }
-    },
+    answerSaved() {
+      this.answering = false
+      this.$store.dispatch('questions/getAnswers', this.$route.params.id)
+          .then((answers: AxiosResponse<Answer[]>) => {
+            this.answers = answers.data || []
+          })
+    }
   }
 })
 </script>
@@ -148,7 +140,7 @@ export default Vue.extend({
                  }">
                   {{ question.rating }}
                 </span>
-                <!-- TODO add plus, minus icons for hover -->
+                <!-- TODO add rating here -->
               </v-layout>
             </v-card-title>
             <v-card-subtitle>
@@ -165,24 +157,10 @@ export default Vue.extend({
             <v-card-actions>
               <v-layout justify-center>
                 <v-btn color="primary" @click="answering = true" v-show="!answering">Answer</v-btn>
-                <v-layout align-center justify-center v-if="answering">
-                  <v-flex xs12 md6>
-                    <v-layout justify-center align-center>
-                      <v-textarea
-                          v-model="answer"
-                          label="Put your answer here..."
-                      ></v-textarea>
-                    </v-layout>
-                    <v-layout>
-                      <v-layout justify-start>
-                        <v-btn @click="answering = false">Dismiss</v-btn>
-                      </v-layout>
-                      <v-layout justify-end>
-                        <v-btn @click="sendAnswer" color="primary" :disabled="!answer">Send</v-btn>
-                      </v-layout>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
+                <NewAnswer v-if="answering"
+                           :questionId="question.id"
+                           @dismiss="answering = false"
+                           @save="answerSaved"/>
               </v-layout>
             </v-card-actions>
             <v-card-text>

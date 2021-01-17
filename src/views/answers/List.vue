@@ -5,7 +5,6 @@ import {Answer} from "@/store/answers";
 export default Vue.extend({
   name: "Answers",
   props: {
-
     owner: Boolean,
     answers: {
       type: Array
