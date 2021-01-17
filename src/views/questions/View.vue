@@ -29,8 +29,7 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
-
+<style scoped type="scss">
 </style>
 
 <template>
@@ -67,7 +66,7 @@ export default Vue.extend({
                   disabled/>
               <div>
                 <div>{{ question.created_by }}</div>
-                <div>{{ question.created_at }}</div>
+                <div>{{ question.created_at | formatDate }}</div>
               </div>
             </v-card-subtitle>
             <v-card-actions>
@@ -99,7 +98,7 @@ export default Vue.extend({
                           <v-layout justify-end align-center>
                             <div>
                               <div>{{ a.created_by }}</div>
-                              <div>{{ a.created_at }}</div>
+                              <div>{{ a.created_at | formatDate }}</div>
                             </div>
                           </v-layout>
                         </v-list-item-subtitle>

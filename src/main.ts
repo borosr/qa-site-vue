@@ -5,10 +5,18 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import {setupInterceptors} from './plugins/axios'
+import moment from 'moment'
 
 Vue.config.productionTip = false
 
 setupInterceptors(store, router)
+
+
+Vue.filter('formatDate', function(value: Date | string) {
+    if (value) {
+        return moment(String(value)).format('YYYY-MM-DD hh:mm')
+    }
+})
 
 new Vue({
     router,
