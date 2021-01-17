@@ -1,9 +1,11 @@
 <script lang="ts">
 import Vue from "vue";
-import {Answer} from "@/store/answers";
+import {Answer} from "@/store/answers"
+import Rating from '@/views/ratings/Rating.vue'
 
 export default Vue.extend({
   name: "Answers",
+  components: {Rating},
   props: {
     owner: Boolean,
     answers: {
@@ -77,8 +79,13 @@ export default Vue.extend({
           </v-list-item-icon>
           <v-list-item-title>
             <v-layout justify-start align-center>
-                            <span :class="{ 'grey--text': a.rating === 0,
-                      'red--text': a.rating < 0, 'green--text': a.rating > 0}">{{ a.rating }}</span>
+              <Rating
+                  :disabled="a.created_by === $store.state.auth.auth.id"
+                  :id="a.id"
+                  kind="answers"
+                  :rating="a.rating"
+                  @rated="a.rating += $event"
+              />
               <v-divider class="mx-4" vertical></v-divider>
               <template v-if="editable && a.created_by === $store.state.auth.auth.id && editing === a.id">
                 <v-text-field
