@@ -4,6 +4,7 @@ import Home from '@/views/Home.vue'
 import Profile from '@/views/profile/View.vue'
 import Questions from '@/views/questions/List.vue'
 import NewQuestion from '@/views/questions/New.vue'
+import ViewQuestion from '@/views/questions/View.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes: Array<RouteConfig> = [
                 path: 'questions/new',
                 name: 'New_question',
                 component: NewQuestion,
+            },
+            {
+                path: 'questions/:id/view',
+                name: 'View_question',
+                component: ViewQuestion
             }
         ]
     },

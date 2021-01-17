@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import Vue from "vue";
 
 export default Vue.extend({
@@ -48,14 +48,20 @@ export default Vue.extend({
               Questions
             </v-card-title>
             <v-card-text>
-              <v-list flat>
-                <v-list-item v-for="(q, index) in questions" :key="index">
+              <v-list>
+                <v-list-item
+                    v-for="(q, index) in questions" :key="index"
+                    link
+                    :to="`/questions/${q.id}/view`"
+                >
                   <v-list-item-icon>
                     <v-icon v-text="'mdi-help-circle'" size="45"></v-icon>
                   </v-list-item-icon>
-                  <v-list-item-title>
-                    {{ q.title }}
-                  </v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ q.title }}
+                    </v-list-item-title>
+                  </v-list-item-content>
                   <v-list-item-action>
                     {{ q.rating }}
                   </v-list-item-action>

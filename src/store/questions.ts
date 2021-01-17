@@ -23,6 +23,12 @@ export default {
     getters: {},
     mutations: {},
     actions: {
+        getOne(_, id) {
+            return _axios.get(`/api/questions/${id}`)
+        },
+        getAnswers(_, id) {
+            return _axios.get(`/api/questions/${id}/answers`)
+        },
         getAll(_, {limit, offset}) {
             return _axios.get('/api/questions', {
                 params: {

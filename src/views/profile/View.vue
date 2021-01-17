@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import Vue from "vue";
 import {mapGetters} from "vuex";
 

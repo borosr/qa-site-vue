@@ -28,12 +28,10 @@ interface Auth {
 }
 
 function tokenExpired(expr: Date | null) {
-    if (!expr) {
+    if (expr === null) {
         return true
     }
-    return moment(new Date().getUTCMilliseconds())
-        .add(5, 'm')
-        .toDate().getUTCMilliseconds() > expr.getUTCMilliseconds();
+    return new Date().getTime() > expr.getTime();
 }
 
 export default {
@@ -78,7 +76,10 @@ export default {
                     kind: localStorage.getItem('authKind')
                 })
             }
-            if (tokenExpired(state.auth.expr) && localStorage.getItem('revokeToken')) {
+            const expired = tokenExpired(state.auth.expr);
+            if (!expired) {
+                return Promise.resolve()
+            } else if (expired && localStorage.getItem('revokeToken')) {
                 return defaultAxios.post<LoginResponse>('/api/revoke', {
                     'revoke_token': localStorage.getItem('revokeToken')
                 }, {
