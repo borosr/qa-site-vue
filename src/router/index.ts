@@ -5,15 +5,23 @@ import Profile from '@/views/profile/View.vue'
 import Questions from '@/views/questions/List.vue'
 import NewQuestion from '@/views/questions/New.vue'
 import ViewQuestion from '@/views/questions/View.vue'
+import CallbackProvider from '@/views/callback/Provider.vue'
+import App from "@/App.vue";
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
     {
         path: '/',
-        name: 'Home',
-        component: Home,
+        name: 'App',
+        component: App,
+        redirect: 'home',
         children: [
+            {
+                path: 'home',
+                name: 'Home',
+                component: Home
+            },
             {
                 path: 'profile',
                 name: 'Profile',
@@ -33,6 +41,11 @@ const routes: Array<RouteConfig> = [
                 path: 'questions/:id/view',
                 name: 'View_question',
                 component: ViewQuestion
+            },
+            {
+                path: 'login/:provider/callback',
+                name: 'Github_callback',
+                component: CallbackProvider
             }
         ]
     },
