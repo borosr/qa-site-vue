@@ -37,6 +37,7 @@ function tokenExpired(expr: Date | null) {
 }
 
 export default {
+    namespaced: true,
     state: {
         auth: defaultAuth()
     },

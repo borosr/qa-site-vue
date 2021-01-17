@@ -1,9 +1,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import {mapGetters} from "vuex";
+import Home from '@/views/Home.vue'
 
 export default Vue.extend({
   name: 'App',
+  components: {Home},
   data: () => ({
     menuItems: [
       {
@@ -108,7 +110,7 @@ export default Vue.extend({
     </v-app-bar>
 
     <v-main>
-      <router-view></router-view>
+      <Home />
     </v-main>
   </v-app>
 </template>
