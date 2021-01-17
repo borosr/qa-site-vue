@@ -69,6 +69,7 @@ export default Vue.extend({
       <v-menu
           bottom
           left
+          v-if="loggedIn"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
