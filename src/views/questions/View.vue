@@ -75,6 +75,14 @@ export default Vue.extend({
               })
         })
       }
+    },
+    setAnswered(answer: Answer) {
+      this.$store.dispatch('questions/setAnswered', {
+        answerId: answer.id,
+        questionId: this.question.id
+      }).then(() => {
+        answer.answered = true
+      })
     }
   }
 })
@@ -190,7 +198,15 @@ export default Vue.extend({
                     <v-list-item :key="'list_item_'+index">
                       <v-layout align-center>
                         <v-list-item-icon>
+                          <v-btn
+                              fab
+                              small
+                              @click="setAnswered(a)"
+                              v-if="question.created_by === $store.state.auth.auth.id">
+                            <v-icon :color="a.answered ? 'green' : 'gray'">mdi-check</v-icon>
+                          </v-btn>
                           <v-icon
+                              v-else
                               size="30"
                               :color="a.answered ? 'green' : 'gray'">mdi-check
                           </v-icon>

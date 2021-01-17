@@ -51,6 +51,9 @@ export default {
         },
         delete(_, id: string) {
             return _axios.delete(`/api/questions/${id}`)
+        },
+        setAnswered(_, {answerId, questionId}: {answerId: string; questionId: string}) {
+            return _axios.put(`/api/questions/${questionId}/answers/${answerId}/answered`)
         }
     },
     modules: {}
