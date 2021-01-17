@@ -32,13 +32,15 @@ export default Vue.extend({
       this.editing = answer.id
     },
     editAnswer(answer: Answer) {
-      this.$store.dispatch('answers/update', {
-        id: answer.id,
-        answer: answer.answer
-      }).then(() => {
-        delete this.oldAnswers[answer.id]
-        this.editing = ''
-      })
+      if (answer.answer) {
+        this.$store.dispatch('answers/update', {
+          id: answer.id,
+          answer: answer.answer
+        }).then(() => {
+          delete this.oldAnswers[answer.id]
+          this.editing = ''
+        })
+      }
     },
     dismissEdit(answer: Answer) {
       answer.answer = this.oldAnswers[answer.id]
@@ -86,14 +88,15 @@ export default Vue.extend({
                 <v-btn class="mx-3" fab color="red" x-small elevation="0" @click="dismissEdit(a)">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
-                <v-btn class="mx-1" fab color="primary" @click="editAnswer(a)" elevation="0" x-small>
+                <v-btn class="mx-1" fab color="primary"
+                       :disabled="!a.answer"
+                       @click="editAnswer(a)" elevation="0" x-small>
                   <v-icon>mdi-check</v-icon>
                 </v-btn>
               </template>
               <template v-else>
                 <span>{{ a.answer }}</span>
               </template>
-
             </v-layout>
           </v-list-item-title>
           <v-list-item-subtitle>
