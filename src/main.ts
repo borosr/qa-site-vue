@@ -14,7 +14,7 @@ setupInterceptors(store, router)
 
 Vue.filter('formatDate', function(value: Date | string) {
     if (value) {
-        return moment(String(value)).format('YYYY-MM-DD hh:mm')
+        return moment(String(value)).format('YYYY-MM-DD HH:mm')
     }
 })
 

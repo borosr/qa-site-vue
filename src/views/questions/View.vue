@@ -168,6 +168,7 @@ export default Vue.extend({
                   v-if="answers.length"
                   :owner="question.created_by === $store.state.auth.auth.id"
                   :answers="answers"
+                  :editable="true"
               />
               <template v-else>
                 <v-layout justify-center>
