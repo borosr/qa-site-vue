@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import Vue from 'vue';
 import Login from '@/views/login/index.vue';
 import {mapGetters} from "vuex";

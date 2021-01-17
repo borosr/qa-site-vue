@@ -20,16 +20,21 @@ export const setupInterceptors = (store: Store<any>, router: VueRouter) => {
     _axios.interceptors.request.use(
         async (config) => {
             if (localStorage.getItem('accessToken')) {
-                await store.dispatch('auth/checkAndRevokeToken').catch((err: Error) => {
-                    console.error(err)
-                    router.replace('/')
-                })
+                const checkResult = await store.dispatch('auth/checkAndRevokeToken')
+                    .then(() => true)
+                    .catch((err: Error) => {
+                        console.error(err)
+                        router.replace('/')
+                        return null
+                    })
+                if (!checkResult) {
+                    return Promise.reject()
+                }
                 config.headers.Authorization = `${localStorage.getItem('accessToken')}`
             }
             return config;
         },
         function (error) {
-            // Do something with request error
             return Promise.reject(error);
         }
     );
