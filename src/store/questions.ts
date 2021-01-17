@@ -48,6 +48,9 @@ export default {
                 title: title,
                 description: description
             })
+        },
+        delete(_, id: string) {
+            return _axios.delete(`/api/questions/${id}`)
         }
     },
     modules: {}

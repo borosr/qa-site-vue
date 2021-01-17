@@ -51,6 +51,11 @@ export default Vue.extend({
         this.originalQuestion.description = ''
       })
     },
+    deleteQuestion() {
+      this.$store.dispatch('questions/delete', this.question.id).then(() => {
+        this.$router.replace('/questions')
+      })
+    },
     dismissEdit() {
       this.question.title = this.originalQuestion.title
       this.question.description = this.originalQuestion.description
@@ -104,6 +109,20 @@ export default Vue.extend({
                 fab
             >
               <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn
+                v-if="question.created_by === $store.state.auth.auth.id"
+                @click="deleteQuestion"
+                color="red"
+                x-small
+                dark
+                absolute
+                top
+                right
+                fab
+                style="right: 5vw"
+            >
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
             <v-card-title>
               <v-layout justify-start align-center>
