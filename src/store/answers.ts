@@ -28,6 +28,11 @@ export default {
                 question_id: questionId,
                 answer: answer
             })
+        },
+        update(_, {id, answer}: { id: string; answer: string }) {
+            return _axios.put(`/api/answers/${id}`, {
+                answer: answer
+            })
         }
     },
     modules: {}
