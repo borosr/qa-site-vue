@@ -42,6 +42,12 @@ export default {
                 title: title,
                 description: description
             })
+        },
+        update(_, {id, title, description}: { id: string; title: string; description: string }) {
+            return _axios.put(`/api/questions/${id}`, {
+                title: title,
+                description: description
+            })
         }
     },
     modules: {}

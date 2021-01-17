@@ -18,7 +18,12 @@ export default Vue.extend({
     },
     answers: [],
     answering: false,
-    answer: ''
+    answer: '',
+    editing: false,
+    originalQuestion: {
+      title: '',
+      description: '',
+    }
   }),
   async mounted() {
     await Promise.all([
@@ -30,6 +35,27 @@ export default Vue.extend({
     })
   },
   methods: {
+    startEditing() {
+      this.editing = true
+      this.originalQuestion.title = this.question.title
+      this.originalQuestion.description = this.question.description
+    },
+    editQuestion() {
+      this.$store.dispatch('questions/update', {
+        id: this.question.id,
+        title: this.question.title,
+        description: this.question.description
+      }).then(() => {
+        this.editing = false
+        this.originalQuestion.title = ''
+        this.originalQuestion.description = ''
+      })
+    },
+    dismissEdit() {
+      this.question.title = this.originalQuestion.title
+      this.question.description = this.originalQuestion.description
+      this.editing = false
+    },
     sendAnswer() {
       if (this.answer) {
         this.$store.dispatch('answers/save', {
@@ -39,9 +65,9 @@ export default Vue.extend({
           this.answer = ''
           this.answering = false
           this.$store.dispatch('questions/getAnswers', this.$route.params.id)
-          .then((answers: AxiosResponse<Answer[]>) => {
-            this.answers = answers.data || []
-          })
+              .then((answers: AxiosResponse<Answer[]>) => {
+                this.answers = answers.data || []
+              })
         })
       }
     }
@@ -57,14 +83,40 @@ export default Vue.extend({
     <v-container fluid fill-height>
       <v-layout align-center justify-center>
         <v-flex xs12>
+          <v-card v-if="editing">
+            <v-card-actions>
+              <v-layout justify-center>
+                <v-btn @click="dismissEdit">Dismiss</v-btn>
+                <v-btn @click="editQuestion" color="primary">Edit</v-btn>
+              </v-layout>
+            </v-card-actions>
+          </v-card>
           <v-card>
+            <v-btn
+                v-if="!editing && question.created_by === $store.state.auth.auth.id"
+                @click="startEditing"
+                color="blue"
+                x-small
+                dark
+                absolute
+                top
+                right
+                fab
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
             <v-card-title>
               <v-layout justify-start align-center>
                 <v-btn to="/questions" color="transparent" fab small>
                   &lt;
                 </v-btn>
                 <v-divider vertical class="mx-4"></v-divider>
-                {{ question.title }}
+                <template v-if="editing">
+                  <v-text-field v-model="question.title"></v-text-field>
+                </template>
+                <template v-else>
+                  {{ question.title }}
+                </template>
               </v-layout>
               <v-spacer/>
               <v-layout justify-end align-center>
@@ -82,8 +134,8 @@ export default Vue.extend({
               <v-textarea
                   auto-grow
                   background-color="grey lighten-3"
-                  :value="question.description"
-                  disabled/>
+                  v-model="question.description"
+                  :disabled="!editing"/>
               <div>
                 <div>{{ question.created_by }}</div>
                 <div>{{ question.created_at | formatDate }}</div>
@@ -116,7 +168,7 @@ export default Vue.extend({
               <template v-if="answers.length">
                 <v-list two-line>
                   <template v-for="(a, index) in answers">
-                    <v-list-item :key="index">
+                    <v-list-item :key="'list_item_'+index">
                       <v-layout align-center>
                         <v-list-item-icon>
                           <v-icon
@@ -142,7 +194,7 @@ export default Vue.extend({
                         </v-list-item-subtitle>
                       </v-layout>
                     </v-list-item>
-                    <v-divider v-if="index < answers.length - 1" inset :key="index"></v-divider>
+                    <v-divider v-if="index < answers.length - 1" inset :key="'divider_'+index"></v-divider>
                   </template>
                 </v-list>
               </template>
