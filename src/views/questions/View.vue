@@ -2,6 +2,7 @@
 import Vue from "vue";
 import {Question} from '@/store/questions'
 import {AxiosResponse} from "axios";
+import {Answer} from "@/store/answers";
 
 export default Vue.extend({
   name: "ViewQuestions",
@@ -15,16 +16,35 @@ export default Vue.extend({
       status: '',
       rating: 0
     },
-    answers: []
+    answers: [],
+    answering: false,
+    answer: ''
   }),
   async mounted() {
     await Promise.all([
       this.$store.dispatch('questions/getOne', this.$route.params.id),
       this.$store.dispatch('questions/getAnswers', this.$route.params.id)
-    ]).then(([question, answers]: [AxiosResponse<Question>, AxiosResponse<{ answered: boolean; answer: string }[]>]) => {
+    ]).then(([question, answers]: [AxiosResponse<Question>, AxiosResponse<Answer[]>]) => {
       this.question = question.data
       this.answers = answers.data || []
     })
+  },
+  methods: {
+    sendAnswer() {
+      if (this.answer) {
+        this.$store.dispatch('answers/save', {
+          questionId: this.question.id,
+          answer: this.answer
+        }).then(() => {
+          this.answer = ''
+          this.answering = false
+          this.$store.dispatch('questions/getAnswers', this.$route.params.id)
+          .then((answers: AxiosResponse<Answer[]>) => {
+            this.answers = answers.data || []
+          })
+        })
+      }
+    }
   }
 })
 </script>
@@ -71,7 +91,25 @@ export default Vue.extend({
             </v-card-subtitle>
             <v-card-actions>
               <v-layout justify-center>
-                <v-btn color="primary">Answer</v-btn>
+                <v-btn color="primary" @click="answering = true" v-show="!answering">Answer</v-btn>
+                <v-layout align-center justify-center v-if="answering">
+                  <v-flex xs12 md6>
+                    <v-layout justify-center align-center>
+                      <v-textarea
+                          v-model="answer"
+                          label="Put your answer here..."
+                      ></v-textarea>
+                    </v-layout>
+                    <v-layout>
+                      <v-layout justify-start>
+                        <v-btn @click="answering = false">Dismiss</v-btn>
+                      </v-layout>
+                      <v-layout justify-end>
+                        <v-btn @click="sendAnswer" color="primary" :disabled="!answer">Send</v-btn>
+                      </v-layout>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
               </v-layout>
             </v-card-actions>
             <v-card-text>
