@@ -30,6 +30,12 @@ export default {
                     offset: offset
                 }
             })
+        },
+        save(_, {title, description}: { title: string; description: string }) {
+            return _axios.post('/api/questions', {
+                title: title,
+                description: description
+            })
         }
     },
     modules: {}

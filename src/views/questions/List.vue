@@ -63,7 +63,7 @@ export default Vue.extend({
               </v-list>
               <v-pagination
                   v-model="page"
-                  :length="count"
+                  :length="(count / limit) + 1"
                   circle
               ></v-pagination>
             </v-card-text>
