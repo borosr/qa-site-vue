@@ -5,10 +5,11 @@ import {AxiosResponse} from "axios";
 import {Answer} from "@/store/answers";
 import Answers from '@/views/answers/List.vue'
 import NewAnswer from '@/views/answers/New.vue'
+import Rating from '@/views/ratings/Rating.vue'
 
 export default Vue.extend({
   name: "ViewQuestions",
-  components: {Answers, NewAnswer},
+  components: {Answers, NewAnswer, Rating},
   data: () => ({
     question: {
       id: '',
@@ -133,14 +134,15 @@ export default Vue.extend({
               </v-layout>
               <v-spacer/>
               <v-layout justify-end align-center>
-                <span :class="{
-                  'grey--text': question.rating === 0,
-                  'red--text': question.rating < 0,
-                  'green--text': question.rating > 0
-                 }">
-                  {{ question.rating }}
-                </span>
-                <!-- TODO add rating here -->
+                <v-flex xs4>
+                  <Rating
+                      :disabled="question.created_by === $store.state.auth.auth.id"
+                      :id="question.id"
+                      kind="questions"
+                      :rating="question.rating"
+                      @rated="question.rating += $event"
+                  />
+                </v-flex>
               </v-layout>
             </v-card-title>
             <v-card-subtitle>
