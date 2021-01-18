@@ -33,8 +33,8 @@ export default Vue.extend({
         kind: this.kind,
         id: this.id
       }).then((rate: AxiosResponse<Rating>) => {
-        this.picked = false;
-        this.$emit('rated', rate.data.value)
+        this.picked = false
+        this.$emit('rated', command !== 'dismissRate' ? rate.data.value : 0)
       })
     }
   }

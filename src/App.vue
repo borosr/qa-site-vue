@@ -5,7 +5,7 @@ import Home from '@/views/Home.vue'
 
 export default Vue.extend({
   name: 'App',
-  components: {Home},
+  // components: {Home},
   data: () => ({
     menuItems: [
       {
@@ -69,6 +69,7 @@ export default Vue.extend({
       <v-menu
           bottom
           left
+          v-if="loggedIn"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -110,7 +111,8 @@ export default Vue.extend({
     </v-app-bar>
 
     <v-main>
-      <Home />
+<!--      <Home />-->
+      <router-view/>
     </v-main>
   </v-app>
 </template>

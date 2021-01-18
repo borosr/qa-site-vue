@@ -1,12 +1,12 @@
 <script lang="ts">
 import Vue from 'vue';
-import Login from '@/views/login/index.vue';
+import Auth from '@/views/auth/Auth.vue';
 import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: 'Home',
   components:{
-    Login
+    Auth
   },
   computed: {
     ...mapGetters('auth', [
@@ -23,6 +23,6 @@ export default Vue.extend({
     <div v-if="loggedIn">
       <router-view/>
     </div>
-    <Login v-else/>
+    <Auth v-else/>
   </div>
 </template>

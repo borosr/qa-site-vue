@@ -1,7 +1,6 @@
 import Vue from "vue"
 import {Module} from 'vuex'
 import jwtDecode from "jwt-decode"
-import moment from "moment"
 import defaultAxios, {AxiosResponse} from "axios"
 import _axios from '@/plugins/axios'
 
@@ -68,6 +67,22 @@ export default {
                 })
             })
         },
+        loginProvider({commit}, {provider, params}: { provider: string; params: any }) {
+            defaultAxios.get<LoginResponse>(`/api/login/${provider}/callback`,
+                {
+                    params: {
+                        ...params
+                    }
+                }).then((resp) => {
+                localStorage.setItem('accessToken', resp.data.token)
+                localStorage.setItem('revokeToken', resp.data.revoke_token)
+                localStorage.setItem('authKind', resp.data.auth_kind)
+                commit('setAuthData', {
+                    token: resp.data.token,
+                    kind: resp.data.auth_kind
+                })
+            })
+        },
         checkAndRevokeToken({commit, state, dispatch}) {
             const token = localStorage.getItem('accessToken')
             if (token) {
@@ -122,12 +137,15 @@ export default {
         getUserData({state}) {
             return _axios.get(`/api/users/${state.auth.id}`)
         },
-        updateProfile({state}, user: { username: string; fullName: string; password: string}) {
+        updateProfile({state}, user: { username: string; fullName: string; password: string }) {
             return _axios.put(`/api/users/${state.auth.id}`, {
                 'username': user.username,
                 'password': user.password,
                 'full_name': user.fullName
             })
+        },
+        signup(_, user: { username: string; full_name: string; password: string }) {
+            return defaultAxios.post('/api/users', user)
         }
     },
     modules: {}
