@@ -7,8 +7,8 @@ export interface Answer {
     created_by: string;
     answer: string;
     created_at: string;
-    answered: string;
-    rating: string;
+    answered: boolean;
+    rating: number;
 }
 
 interface Answers {

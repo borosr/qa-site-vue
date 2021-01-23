@@ -22,7 +22,9 @@ export default Vue.extend({
   }),
   methods: {
     logout() {
-      this.$store.dispatch('auth/logout')
+      this.$store.dispatch('auth/logout').then(() => {
+        this.$router.replace('/')
+      })
     }
   },
   computed: {

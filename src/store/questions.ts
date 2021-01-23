@@ -8,7 +8,7 @@ export interface Question {
     created_by: string;
     created_at: string;
     status: string;
-    rating: string;
+    rating: number;
 }
 
 interface Questions {

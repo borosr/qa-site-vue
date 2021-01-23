@@ -6,8 +6,8 @@ export default Vue.extend({
   data: () => ({
     title: '',
     description: '',
-    titleRules: [v => v.length <= 100 || 'Max 100 characters'],
-    descriptionRules: [v => v.length <= 600 || 'Max 600 characters']
+    titleRules: [(v: string) => v.length <= 100 || 'Max 100 characters'],
+    descriptionRules: [(v: string) => v.length <= 600 || 'Max 600 characters']
   }),
   methods: {
     save() {
