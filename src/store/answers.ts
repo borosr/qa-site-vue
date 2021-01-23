@@ -33,6 +33,9 @@ export default {
             return _axios.put(`/api/answers/${id}`, {
                 answer: answer
             })
+        },
+        myAnswers() {
+            return _axios.get<Answer[]>('/api/answers')
         }
     },
     modules: {}

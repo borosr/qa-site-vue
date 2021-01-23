@@ -1,9 +1,11 @@
 <script lang="ts">
 import Vue from "vue";
 import {mapGetters} from "vuex";
+import MyAnswers from "@/views/answers/MyAnswers.vue";
 
 export default Vue.extend({
   name: "Profile",
+  components: {MyAnswers},
   data: () => ({
     user: {
       username: '',
@@ -38,7 +40,7 @@ form {
 <template>
   <v-container fluid fill-height>
     <v-layout align-start justify-center>
-      <v-flex xs12 sm8 md6>
+      <v-flex xs12 md6>
         <v-card>
           <v-card-title>
             Profile details
@@ -85,6 +87,14 @@ form {
               </v-layout>
             </v-flex>
           </v-card-actions>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 md6 class="mx-2">
+        <v-card>
+          <v-card-title>My Answers</v-card-title>
+          <v-card-text>
+            <MyAnswers/>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
