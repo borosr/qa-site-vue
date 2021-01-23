@@ -79,109 +79,107 @@ export default Vue.extend({
 </style>
 
 <template>
-  <v-main>
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12>
-          <v-card v-if="editing">
-            <v-card-actions>
-              <v-layout justify-center>
-                <v-btn @click="dismissEdit">Dismiss</v-btn>
-                <v-btn @click="editQuestion" color="primary">Edit</v-btn>
-              </v-layout>
-            </v-card-actions>
-          </v-card>
-          <v-card>
-            <v-btn
-                v-if="!editing && question.created_by === $store.state.auth.auth.id"
-                @click="startEditing"
-                color="blue"
-                x-small
-                dark
-                absolute
-                top
-                right
-                fab
-            >
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn
-                v-if="question.created_by === $store.state.auth.auth.id"
-                @click="deleteQuestion"
-                color="red"
-                x-small
-                dark
-                absolute
-                top
-                right
-                fab
-                style="right: 5vw"
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-            <v-card-title>
-              <v-layout justify-start align-center>
-                <v-btn to="/home" color="transparent" fab small>
-                  <v-icon>mdi-less-than</v-icon>
-                </v-btn>
-                <v-divider vertical class="mx-4"></v-divider>
-                <template v-if="editing">
-                  <v-text-field v-model="question.title"></v-text-field>
-                </template>
-                <template v-else>
-                  {{ question.title }}
-                </template>
-              </v-layout>
-              <v-spacer/>
-              <v-layout justify-end align-center>
-                <v-flex xs4>
-                  <Rating
-                      :disabled="question.created_by === $store.state.auth.auth.id"
-                      :id="question.id"
-                      kind="questions"
-                      :rating="question.rating"
-                      @rated="question.rating += $event"
-                  />
-                </v-flex>
-              </v-layout>
-            </v-card-title>
-            <v-card-subtitle>
-              <v-textarea
-                  auto-grow
-                  background-color="grey lighten-3"
-                  v-model="question.description"
-                  :disabled="!editing"/>
-              <div>
-                <div>{{ question.created_by }}</div>
-                <div>{{ question.created_at | formatDate }}</div>
-              </div>
-            </v-card-subtitle>
-            <v-card-actions>
-              <v-layout justify-center>
-                <v-btn color="primary" @click="answering = true" v-show="!answering">Answer</v-btn>
-                <NewAnswer v-if="answering"
-                           :questionId="question.id"
-                           @dismiss="answering = false"
-                           @save="answerSaved"/>
-              </v-layout>
-            </v-card-actions>
-            <v-card-text>
-              <Answers
-                  v-if="answers.length"
-                  :owner="question.created_by === $store.state.auth.auth.id"
-                  :answers="answers"
-                  :editable="true"
-                  :questionId="question.id"
-              />
-              <template v-else>
-                <v-layout justify-center>
-                  No one answered this question, be the first!
-                </v-layout>
+  <v-container fluid fill-height>
+    <v-layout align-start justify-center>
+      <v-flex xs12>
+        <v-card v-if="editing">
+          <v-card-actions>
+            <v-layout justify-center>
+              <v-btn @click="dismissEdit">Dismiss</v-btn>
+              <v-btn @click="editQuestion" color="primary">Edit</v-btn>
+            </v-layout>
+          </v-card-actions>
+        </v-card>
+        <v-card>
+          <v-btn
+              v-if="!editing && question.created_by === $store.state.auth.auth.id"
+              @click="startEditing"
+              color="blue"
+              x-small
+              dark
+              absolute
+              top
+              right
+              fab
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn
+              v-if="question.created_by === $store.state.auth.auth.id"
+              @click="deleteQuestion"
+              color="red"
+              x-small
+              dark
+              absolute
+              top
+              right
+              fab
+              style="right: 5vw"
+          >
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+          <v-card-title>
+            <v-layout justify-start align-center>
+              <v-btn to="/home" color="transparent" fab small>
+                <v-icon>mdi-less-than</v-icon>
+              </v-btn>
+              <v-divider vertical class="mx-4"></v-divider>
+              <template v-if="editing">
+                <v-text-field v-model="question.title"></v-text-field>
               </template>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-main>
+              <template v-else>
+                {{ question.title }}
+              </template>
+            </v-layout>
+            <v-spacer/>
+            <v-layout justify-end align-center>
+              <v-flex xs4>
+                <Rating
+                    :disabled="question.created_by === $store.state.auth.auth.id"
+                    :id="question.id"
+                    kind="questions"
+                    :rating="question.rating"
+                    @rated="question.rating += $event"
+                />
+              </v-flex>
+            </v-layout>
+          </v-card-title>
+          <v-card-subtitle>
+            <v-textarea
+                auto-grow
+                background-color="grey lighten-3"
+                v-model="question.description"
+                :disabled="!editing"/>
+            <div>
+              <div>{{ question.created_by }}</div>
+              <div>{{ question.created_at | formatDate }}</div>
+            </div>
+          </v-card-subtitle>
+          <v-card-actions>
+            <v-layout justify-center>
+              <v-btn color="primary" @click="answering = true" v-show="!answering">Answer</v-btn>
+              <NewAnswer v-if="answering"
+                         :questionId="question.id"
+                         @dismiss="answering = false"
+                         @save="answerSaved"/>
+            </v-layout>
+          </v-card-actions>
+          <v-card-text>
+            <Answers
+                v-if="answers.length"
+                :owner="question.created_by === $store.state.auth.auth.id"
+                :answers="answers"
+                :editable="true"
+                :questionId="question.id"
+            />
+            <template v-else>
+              <v-layout justify-center>
+                No one answered this question, be the first!
+              </v-layout>
+            </template>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>

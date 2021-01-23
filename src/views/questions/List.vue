@@ -80,7 +80,7 @@ export default Vue.extend({
           </v-card-text>
           <v-card-text v-else>
             <v-layout justify-center align-center>
-              <h2>No question asked yet, be the first, ask something!</h2>
+              No question asked yet, be the first, ask something!
             </v-layout>
           </v-card-text>
         </v-card>
