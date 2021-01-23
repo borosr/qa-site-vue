@@ -14,17 +14,21 @@ export default Vue.extend({
     editable: {
       type: Boolean,
       default: false
+    },
+    questionId: {
+      type: String,
+      required: true
     }
   },
   data: () => ({
     editing: '',
-    oldAnswers: {}
+    oldAnswers: {} as any
   }),
   methods: {
     setAnswered(answer: Answer) {
       this.$store.dispatch('questions/setAnswered', {
         answerId: answer.id,
-        questionId: this.question.id
+        questionId: this.questionId
       }).then(() => {
         answer.answered = true
       })

@@ -20,7 +20,7 @@ export default Vue.extend({
       status: '',
       rating: 0
     },
-    answers: [],
+    answers: [] as Array<Answer>,
     answering: false,
     editing: false,
     originalQuestion: {
@@ -171,6 +171,7 @@ export default Vue.extend({
                   :owner="question.created_by === $store.state.auth.auth.id"
                   :answers="answers"
                   :editable="true"
+                  :questionId="question.id"
               />
               <template v-else>
                 <v-layout justify-center>
