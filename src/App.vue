@@ -13,11 +13,6 @@ export default Vue.extend({
         icon: 'mdi-account',
         path: '/profile'
       },
-      {
-        title: 'Questions',
-        icon: 'mdi-comment-question',
-        path: '/questions'
-      },
     ],
   }),
   methods: {
@@ -113,7 +108,6 @@ export default Vue.extend({
     </v-app-bar>
 
     <v-main>
-<!--      <Home />-->
       <router-view/>
     </v-main>
   </v-app>

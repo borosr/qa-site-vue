@@ -17,7 +17,7 @@ export default Vue.extend({
             description: this.description
           })
           .then(() => {
-            this.$router.replace('/questions')
+            this.$router.replace('/home')
           })
     }
   }
@@ -64,7 +64,7 @@ form {
               </v-layout>
               <v-card-actions>
                 <v-layout justify-start>
-                  <v-btn to="/questions" color="primary">
+                  <v-btn to="/home" color="primary">
                     Back
                   </v-btn>
                 </v-layout>

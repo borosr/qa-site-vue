@@ -36,58 +36,57 @@ form {
 </style>
 
 <template>
-  <v-main>
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md6>
-          <v-card>
-            <v-card-title>
-              Profile details
-            </v-card-title>
-            <v-card-text>
-              <v-layout justify-center>
-                <v-form>
+  <v-container fluid fill-height>
+    <v-layout align-start justify-center>
+      <v-flex xs12 sm8 md6>
+        <v-card>
+          <v-card-title>
+            Profile details
+          </v-card-title>
+          <v-card-text>
+            <v-layout justify-center>
+              <v-form>
+                <v-text-field
+                    name="username"
+                    label="Username"
+                    v-model="user.username"
+                    disabled
+                ></v-text-field>
+                <v-text-field
+                    name="full_name"
+                    label="Full name"
+                    v-model="user.fullName"
+                ></v-text-field>
+                <template v-if="kind === 'DefaultLogin'">
                   <v-text-field
-                      name="username"
-                      label="Username"
-                      v-model="user.username"
-                      disabled
+                      name="password"
+                      label="Password"
+                      v-model="user.password"
+                      type="password"
                   ></v-text-field>
                   <v-text-field
-                      name="full_name"
-                      label="Full name"
-                      v-model="user.fullName"
+                      name="password_confirm"
+                      label="Password confirmation"
+                      v-model="user.passwordConfirm"
+                      type="password"
                   ></v-text-field>
-                  <template v-if="kind === 'DefaultLogin'">
-                    <v-text-field
-                        name="password"
-                        label="Password"
-                        v-model="user.password"
-                        type="password"
-                    ></v-text-field>
-                    <v-text-field
-                        name="password_confirm"
-                        label="Password confirmation"
-                        v-model="user.passwordConfirm"
-                        type="password"
-                    ></v-text-field>
-                  </template>
-                </v-form>
+                </template>
+              </v-form>
+            </v-layout>
+          </v-card-text>
+          <v-card-actions>
+            <v-flex>
+              <v-layout justify-end>
+                <v-btn
+                    :disabled="!user.fullName || user.fullName.length < 5 || (user.password !== user.passwordConfirm)"
+                    @click="updateProfile"
+                >Save
+                </v-btn>
               </v-layout>
-            </v-card-text>
-            <v-card-actions>
-              <v-flex>
-                <v-layout justify-end>
-                  <v-btn
-                      :disabled="!user.fullName || user.fullName.length < 5 || (user.password !== user.passwordConfirm)"
-                      @click="updateProfile"
-                  >Save</v-btn>
-                </v-layout>
-              </v-flex>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-main>
+            </v-flex>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>

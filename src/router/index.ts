@@ -28,11 +28,6 @@ const routes: Array<RouteConfig> = [
                 component: Profile
             },
             {
-                path: 'questions',
-                name: 'Questions',
-                component: Questions,
-            },
-            {
                 path: 'questions/new',
                 name: 'New_question',
                 component: NewQuestion,

@@ -56,7 +56,7 @@ export default Vue.extend({
     },
     deleteQuestion() {
       this.$store.dispatch('questions/delete', this.question.id).then(() => {
-        this.$router.replace('/questions')
+        this.$router.replace('/home')
       })
     },
     dismissEdit() {
@@ -121,8 +121,8 @@ export default Vue.extend({
             </v-btn>
             <v-card-title>
               <v-layout justify-start align-center>
-                <v-btn to="/questions" color="transparent" fab small>
-                  &lt;
+                <v-btn to="/home" color="transparent" fab small>
+                  <v-icon>mdi-less-than</v-icon>
                 </v-btn>
                 <v-divider vertical class="mx-4"></v-divider>
                 <template v-if="editing">
