@@ -88,7 +88,7 @@ export default Vue.extend({
                   :id="a.id"
                   kind="answers"
                   :rating="a.rating"
-                  @rated="a.rating += $event"
+                  @rated="a.rating = $event"
               />
               <v-divider class="mx-4" vertical></v-divider>
               <template v-if="editable && a.created_by === $store.state.auth.auth.id && editing === a.id">

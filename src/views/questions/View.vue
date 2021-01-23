@@ -139,7 +139,7 @@ export default Vue.extend({
                     :id="question.id"
                     kind="questions"
                     :rating="question.rating"
-                    @rated="question.rating += $event"
+                    @rated="question.rating = $event"
                 />
               </v-flex>
             </v-layout>
