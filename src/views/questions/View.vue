@@ -6,6 +6,7 @@ import {Answer} from "@/store/answers";
 import Answers from '@/views/answers/List.vue'
 import NewAnswer from '@/views/answers/New.vue'
 import Rating from '@/views/ratings/Rating.vue'
+import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: "ViewQuestions",
@@ -71,6 +72,14 @@ export default Vue.extend({
             this.answers = answers.data || []
           })
     }
+  },
+  computed: {
+    ...mapGetters('auth', [
+      'loggedIn'
+    ]),
+    ...mapGetters('info', [
+      'visible'
+    ]),
   }
 })
 </script>
@@ -135,7 +144,7 @@ export default Vue.extend({
             <v-layout justify-end align-center>
               <v-flex xs4>
                 <Rating
-                    :disabled="question.created_by === $store.state.auth.auth.id"
+                    :disabled="visible || question.created_by === $store.state.auth.auth.id"
                     :id="question.id"
                     kind="questions"
                     :rating="question.rating"
@@ -155,7 +164,7 @@ export default Vue.extend({
               <div>{{ question.created_at | formatDate }}</div>
             </div>
           </v-card-subtitle>
-          <v-card-actions>
+          <v-card-actions v-if="loggedIn">
             <v-layout justify-center>
               <v-btn color="primary" @click="answering = true" v-show="!answering">Answer</v-btn>
               <NewAnswer v-if="answering"

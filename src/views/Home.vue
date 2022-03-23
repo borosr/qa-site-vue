@@ -13,6 +13,7 @@ export default Vue.extend({
     ...mapGetters('auth', [
         'loggedIn'
     ]),
+    ...mapGetters('info', ['visible']),
   }
 })
 </script>
@@ -21,7 +22,7 @@ export default Vue.extend({
 
 <template>
   <div>
-    <template v-if="loggedIn">
+    <template v-if="loggedIn || visible">
       <Questions/>
     </template>
     <Auth v-else/>

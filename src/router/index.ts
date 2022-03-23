@@ -2,11 +2,11 @@ import Vue from 'vue'
 import VueRouter, {RouteConfig} from 'vue-router'
 import Home from '@/views/Home.vue'
 import Profile from '@/views/profile/View.vue'
-import Questions from '@/views/questions/List.vue'
 import NewQuestion from '@/views/questions/New.vue'
 import ViewQuestion from '@/views/questions/View.vue'
 import CallbackProvider from '@/views/callback/Provider.vue'
 import App from "@/App.vue";
+import Auth from "@/views/auth/Auth.vue";
 
 Vue.use(VueRouter)
 
@@ -21,6 +21,11 @@ const routes: Array<RouteConfig> = [
                 path: 'home',
                 name: 'Home',
                 component: Home
+            },
+            {
+                path: 'login',
+                name: 'Login',
+                component: Auth
             },
             {
                 path: 'profile',

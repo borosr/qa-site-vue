@@ -18,17 +18,29 @@ export default Vue.extend({
   methods: {
     logout() {
       this.$store.dispatch('auth/logout').then(() => {
-        this.$router.replace('/')
+        if (this.$route.path !== '/home') {
+          this.$router.replace('/')
+        }
       })
+    },
+    navigateLogin() {
+      if (this.$route.path !== '/login') {
+        this.$router.replace('/login')
+      }
     }
   },
   computed: {
     ...mapGetters('auth', [
       'loggedIn'
     ]),
+    ...mapGetters('info', [
+      'visible',
+      'invisible'
+    ]),
   },
   async beforeCreate() {
     await this.$store.dispatch('auth/checkAndRevokeToken')
+    this.$store.dispatch('info/fetch')
   }
 });
 </script>
@@ -66,7 +78,7 @@ export default Vue.extend({
       <v-menu
           bottom
           left
-          v-if="loggedIn"
+          v-if="visible || (invisible && loggedIn) "
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -80,22 +92,34 @@ export default Vue.extend({
         </template>
 
         <v-list>
+          <template v-if="loggedIn">
+            <v-list-item
+                v-for="(item, i) in menuItems"
+                :key="i"
+                link
+                :to="item.path"
+            >
+              <v-list-item-icon>
+                <v-icon v-text="item.icon"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
           <v-list-item
-              v-for="(item, i) in menuItems"
-              :key="i"
+              v-if="!loggedIn"
+              @click="navigateLogin()"
               link
-              :to="item.path"
           >
             <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
+              <v-icon v-text="'mdi-logout'"></v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-content v-text="'Login'"></v-list-item-content>
           </v-list-item>
           <v-list-item
               v-if="loggedIn"
-              @click="logout(logout)"
+              @click="logout()"
               link
           >
             <v-list-item-icon>

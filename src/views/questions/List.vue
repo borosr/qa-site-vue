@@ -1,5 +1,6 @@
 <script lang="ts">
 import Vue from "vue";
+import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: "Questions",
@@ -19,11 +20,16 @@ export default Vue.extend({
         offset: (this.page - 1) * this.limit
       }).then((resp) => {
         if (resp.data) {
-          this.questions = resp.data.data
+          this.questions = resp.data.data || []
           this.count = resp.data.count
         }
       })
     }
+  },
+  computed: {
+    ...mapGetters('auth', [
+      'loggedIn'
+    ]),
   }
 })
 </script>
@@ -38,6 +44,7 @@ export default Vue.extend({
       <v-flex xs12>
         <v-card>
           <v-btn
+              v-if="loggedIn"
               to="/questions/new"
               color="blue"
               dark
