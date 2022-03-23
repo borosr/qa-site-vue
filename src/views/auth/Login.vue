@@ -1,5 +1,6 @@
 <script lang="ts">
 import Vue from 'vue';
+import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: "Login",
@@ -12,8 +13,15 @@ export default Vue.extend({
       this.$store.dispatch('auth/loginDefault', {
         username: this.username,
         password: this.password
+      }).then(() => {
+        if (this.visible) {
+          this.$router.push('/')
+        }
       })
     }
+  },
+  computed: {
+    ...mapGetters('info', ['visible']),
   }
 })
 </script>

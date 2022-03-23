@@ -2,6 +2,7 @@
 import Vue from "vue";
 import {Answer} from "@/store/answers"
 import Rating from '@/views/ratings/Rating.vue'
+import {mapGetters} from "vuex";
 
 export default Vue.extend({
   name: "Answers",
@@ -53,8 +54,12 @@ export default Vue.extend({
       delete this.oldAnswers[answer.id]
       this.editing = ''
     }
+  },
+  computed: {
+    ...mapGetters('info', [
+      'visible'
+    ]),
   }
-
 })
 </script>
 
@@ -84,7 +89,7 @@ export default Vue.extend({
           <v-list-item-title>
             <v-layout justify-start align-center>
               <Rating
-                  :disabled="a.created_by === $store.state.auth.auth.id"
+                  :disabled="visible || a.created_by === $store.state.auth.auth.id"
                   :id="a.id"
                   kind="answers"
                   :rating="a.rating"

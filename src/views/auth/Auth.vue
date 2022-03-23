@@ -14,6 +14,9 @@ export default Vue.extend({
       if (['login', 'signup', ''].indexOf(comp) !== -1) {
         this.showing = comp
       }
+    },
+    providerEnabled(provider: string): boolean {
+      return this.$store.state.info.oauth_providers[provider]
     }
   }
 })
@@ -58,7 +61,7 @@ export default Vue.extend({
                   Signup using Email
                 </v-btn>
               </v-layout>
-              <v-layout justify-center>
+              <v-layout v-if="providerEnabled('github')" justify-center>
                 <v-btn
                     color="black"
                     href="/api/login/github"
